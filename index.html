@@ -281,6 +281,30 @@ typeWriter(apologies[0].text)
 
 function moveButton(){
 
+/* create heart trail */
+
+const trail=document.createElement("div")
+trail.innerHTML="💖"
+
+trail.style.position="fixed"
+trail.style.left=noBtn.getBoundingClientRect().left+"px"
+trail.style.top=noBtn.getBoundingClientRect().top+"px"
+trail.style.fontSize="22px"
+trail.style.pointerEvents="none"
+trail.style.transition="opacity 0.8s"
+
+document.body.appendChild(trail)
+
+setTimeout(()=>{
+trail.style.opacity="0"
+},100)
+
+setTimeout(()=>{
+trail.remove()
+},800)
+
+/* move button */
+
 const w=noBtn.offsetWidth
 const h=noBtn.offsetHeight
 
@@ -415,4 +439,5 @@ You mean the world to me and I never want to hurt you again 💖
 
 </body>
 </html>
+
 
