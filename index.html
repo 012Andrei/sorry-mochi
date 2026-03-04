@@ -332,14 +332,32 @@ function confetti(){
 for(let i=0;i<80;i++){
 
 const c=document.createElement("div")
-c.classList.add("confetti")
 c.innerHTML="💖"
 
+c.style.position="fixed"
+c.style.top="-20px"
 c.style.left=Math.random()*100+"vw"
+
+const size=20+Math.random()*20
+c.style.fontSize=size+"px"
+
+const duration=2+Math.random()*2
+const drift=(Math.random()*200)-100
+const rotate=Math.random()*720
+
+c.style.transition=`transform ${duration}s linear, top ${duration}s linear`
+c.style.zIndex="9999"
 
 document.body.appendChild(c)
 
-setTimeout(()=>c.remove(),3000)
+setTimeout(()=>{
+
+c.style.top="100vh"
+c.style.transform=`translateX(${drift}px) rotate(${rotate}deg)`
+
+},50)
+
+setTimeout(()=>c.remove(),duration*1000+500)
 
 }
 
@@ -397,3 +415,4 @@ You mean the world to me and I never want to hurt you again 💖
 
 </body>
 </html>
+
