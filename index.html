@@ -1,0 +1,257 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I'm Really Sorry ❤️</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#ffe6f0;
+    overflow:hidden;
+    text-align:center;
+}
+
+.container{
+    position:relative;
+    z-index:2;
+    padding:20px;
+}
+
+h1{
+    color:#ff4d6d;
+}
+
+#message{
+    max-width:320px;
+    margin:auto;
+    min-height:80px;
+    font-size:18px;
+}
+
+.buttons{
+    margin-top:20px;
+}
+
+button{
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    margin:10px;
+    transition:0.2s;
+}
+
+#yes{
+    background:#ff4d6d;
+    color:white;
+}
+
+#no{
+    background:#777;
+    color:white;
+}
+
+/* floating hearts */
+
+.heart{
+    position:absolute;
+    color:#ff6b81;
+    font-size:20px;
+    animation:float 6s linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(100vh);
+        opacity:1;
+    }
+    to{
+        transform:translateY(-10vh);
+        opacity:0;
+    }
+}
+
+/* confetti hearts */
+
+.confetti{
+    position:fixed;
+    font-size:25px;
+    animation:confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall{
+    from{
+        transform:translateY(-50px) rotate(0deg);
+        opacity:1;
+    }
+    to{
+        transform:translateY(100vh) rotate(360deg);
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2a7b0a1c9e.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+
+<h1>I'm really sorry 🥺</h1>
+
+<p id="message"></p>
+
+<div class="buttons">
+<button id="yes">Okay... I'll hear you out ❤️</button>
+<button id="no">Still mad 😤</button>
+</div>
+
+</div>
+
+<script>
+
+/* TYPEWRITER */
+
+const text = "I know I messed up and hurt you. I'm really sorry. You mean so much to me and I hate that I made you upset. Can I please make it up to you?"
+
+let i = 0
+
+function typeWriter(){
+    if(i < text.length){
+        document.getElementById("message").innerHTML += text.charAt(i)
+        i++
+        setTimeout(typeWriter,40)
+    }
+}
+
+typeWriter()
+
+/* FLOATING HEARTS */
+
+function createHeart(){
+
+    const heart = document.createElement("div")
+    heart.classList.add("heart")
+    heart.innerHTML = "💖"
+
+    heart.style.left = Math.random()*100 + "vw"
+    heart.style.fontSize = (15 + Math.random()*20) + "px"
+
+    document.body.appendChild(heart)
+
+    setTimeout(()=>{heart.remove()},6000)
+}
+
+setInterval(createHeart,500)
+
+/* BUTTON LOGIC */
+
+let yesSize = 18
+let noClicks = 0
+
+const yesBtn = document.getElementById("yes")
+const noBtn = document.getElementById("no")
+
+function moveButton(){
+
+    const btnWidth = noBtn.offsetWidth
+    const btnHeight = noBtn.offsetHeight
+
+    const maxX = window.innerWidth - btnWidth - 20
+    const maxY = window.innerHeight - btnHeight - 20
+
+    const x = Math.random() * maxX
+    const y = Math.random() * maxY
+
+    noBtn.style.position = "absolute"
+    noBtn.style.left = x + "px"
+    noBtn.style.top = y + "px"
+
+}
+
+/* NO BUTTON */
+
+noBtn.addEventListener("click",(e)=>{
+
+    e.preventDefault()
+
+    noClicks++
+
+    moveButton()
+
+    yesSize += 8
+    yesBtn.style.fontSize = yesSize + "px"
+
+    if(noClicks >= 5){
+        document.getElementById("message").innerHTML =
+        "Okay okay I deserve that 😭 but please give me one chance."
+    }
+
+})
+
+/* MUSIC START */
+
+document.body.addEventListener("click",()=>{
+    document.getElementById("music").play()
+},{once:true})
+
+/* CONFETTI FUNCTION */
+
+function heartConfetti(){
+
+    for(let i=0;i<40;i++){
+
+        const confetti = document.createElement("div")
+        confetti.classList.add("confetti")
+        confetti.innerHTML = "💖"
+
+        confetti.style.left = Math.random()*100 + "vw"
+        confetti.style.animationDuration = (2 + Math.random()*2) + "s"
+
+        document.body.appendChild(confetti)
+
+        setTimeout(()=>{confetti.remove()},3000)
+    }
+
+}
+
+/* YES BUTTON */
+
+yesBtn.addEventListener("click",()=>{
+
+heartConfetti()
+
+setTimeout(()=>{
+
+document.body.innerHTML = `
+
+<div style="padding:40px;text-align:center">
+
+<h1 style="color:#ff4d6d">Thank you for giving me a chance ❤️</h1>
+
+<p style="font-size:20px;max-width:400px;margin:auto">
+I promise I'll do better and make things right.  
+You mean the world to me and I never want to hurt you again.  
+Thank you for being patient with me. ❤️
+</p>
+
+</div>
+
+`
+
+},1500)
+
+})
+
+</script>
+
+</body>
+</html>
