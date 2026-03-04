@@ -351,37 +351,43 @@ setTimeout(()=>heart.remove(),3000)
 
 /* CONFETTI */
 
-function confetti(){
+function heartExplosion(){
 
-for(let i=0;i<80;i++){
+const centerX = window.innerWidth / 2
+const centerY = window.innerHeight / 2
 
-const c=document.createElement("div")
-c.innerHTML="💖"
+for(let i=0;i<90;i++){
 
-c.style.position="fixed"
-c.style.top="-20px"
-c.style.left=Math.random()*100+"vw"
+const heart = document.createElement("div")
+heart.innerHTML="💖"
 
-const size=20+Math.random()*20
-c.style.fontSize=size+"px"
+heart.style.position="fixed"
+heart.style.left=centerX+"px"
+heart.style.top=centerY+"px"
 
-const duration=2+Math.random()*2
-const drift=(Math.random()*200)-100
-const rotate=Math.random()*720
+heart.style.fontSize=(16+Math.random()*24)+"px"
+heart.style.pointerEvents="none"
+heart.style.zIndex="9999"
 
-c.style.transition=`transform ${duration}s linear, top ${duration}s linear`
-c.style.zIndex="9999"
+document.body.appendChild(heart)
 
-document.body.appendChild(c)
+/* random explosion direction */
 
-setTimeout(()=>{
+const angle=Math.random()*2*Math.PI
+const distance=200+Math.random()*500
 
-c.style.top="100vh"
-c.style.transform=`translateX(${drift}px) rotate(${rotate}deg)`
+const x=Math.cos(angle)*distance
+const y=Math.sin(angle)*distance
 
-},50)
+heart.animate([
+{transform:"translate(-50%,-50%) scale(1)",opacity:1},
+{transform:`translate(${x}px,${y}px) scale(0.5) rotate(${Math.random()*720}deg)`,opacity:0}
+],{
+duration:1200+Math.random()*800,
+easing:"ease-out"
+})
 
-setTimeout(()=>c.remove(),duration*1000+500)
+setTimeout(()=>heart.remove(),2000)
 
 }
 
@@ -407,7 +413,7 @@ Loading forgiveness...
 
 setTimeout(()=>{
 
-confetti()
+heartExplosion()
 
 /* achievement screen */
 
@@ -467,6 +473,7 @@ You mean the world to me and I never want to hurt you again 💖
 
 </body>
 </html>
+
 
 
 
