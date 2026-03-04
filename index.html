@@ -8,13 +8,21 @@
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#ffd6e7,#ffeef6);
+font-family:'Segoe UI',sans-serif;
 text-align:center;
 overflow:hidden;
+background:linear-gradient(-45deg,#ffd6e7,#ffeef6,#ffd9ec,#ffe4f4);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
 }
 
-/* glass apology card */
+@keyframes bg{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* glass card */
 
 .card{
 width:85%;
@@ -23,9 +31,19 @@ margin:120px auto 40px auto;
 padding:30px;
 
 background:rgba(255,255,255,0.25);
-backdrop-filter:blur(12px);
+backdrop-filter:blur(15px);
 border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.15),
+0 0 30px rgba(255,120,170,0.2);
+
+animation:floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-6px);}
 }
 
 h1{
@@ -34,7 +52,7 @@ color:#ff4d6d;
 
 #gif{
 width:180px;
-border-radius:12px;
+border-radius:14px;
 margin:15px 0;
 }
 
@@ -56,14 +74,15 @@ button{
 padding:12px 25px;
 font-size:18px;
 border:none;
-border-radius:12px;
+border-radius:14px;
 cursor:pointer;
-transition:0.2s;
+transition:0.25s;
 }
 
 #yes{
 background:#ff4d6d;
 color:white;
+position:relative;
 }
 
 #no{
@@ -85,22 +104,67 @@ from{transform:translateY(100vh);opacity:1;}
 to{transform:translateY(-10vh);opacity:0;}
 }
 
+/* orbit hearts */
+
+.orbit{
+position:absolute;
+font-size:18px;
+animation:orbit 3s linear infinite;
+}
+
+@keyframes orbit{
+from{transform:rotate(0deg) translateX(30px) rotate(0deg);}
+to{transform:rotate(360deg) translateX(30px) rotate(-360deg);}
+}
+
 /* confetti */
 
 .confetti{
 position:fixed;
-top:-30px;
+top:-20px;
 font-size:25px;
-animation:confettiFall 3s linear forwards;
+animation:fall 3s linear forwards;
 }
 
-@keyframes confettiFall{
-from{transform:translateY(0) rotate(0deg);opacity:1;}
-to{transform:translateY(100vh) rotate(360deg);opacity:0;}
+@keyframes fall{
+from{transform:translateY(0) rotate(0deg);}
+to{transform:translateY(100vh) rotate(360deg);}
 }
 
-.final{
+/* loading */
+
+.loading{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:30px;
+color:#ff4d6d;
+font-weight:bold;
+}
+
+.pulse{
+font-size:45px;
+margin-top:20px;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+0%,100%{opacity:0.4;}
+50%{opacity:1;}
+}
+
+/* ending */
+
+.ending{
 padding:40px;
+animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:scale(.9);}
+to{opacity:1;transform:scale(1);}
 }
 
 </style>
@@ -109,12 +173,12 @@ padding:40px;
 <body>
 
 <audio id="music" loop>
-<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2a7b0a1c9e.mp3" type="audio/mpeg">
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_2a7b0a1c9e.mp3">
 </audio>
 
 <div class="card">
 
-<h1>I'm really sorry 🥺</h1>
+<h1 id="title">I'm really sorry 🥺</h1>
 
 <img id="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
@@ -164,26 +228,25 @@ text:"I know I messed up... and I'm really sorry.",
 gif:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
 },
 {
-text:"You mean so much to me. Seeing you upset because of me hurts my heart.",
+text:"You mean so much to me. Seeing you upset because of me hurts.",
 gif:"https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif"
 },
 {
-text:"I can't undo what happened, but I really want to make things right.",
+text:"I can't undo what happened but I really want to make things right.",
 gif:"https://media.giphy.com/media/l378giAZgxPw3eO52/giphy.gif"
 }
 ]
 
 const dodgeMessages=[
 "Hey! That was close 😳",
-"You almost got it 😭",
-"Please don't catch that button 🏃",
-"Okay that's not fair 😭",
-"You're really trying huh 😳"
+"You almost got it!",
+"Please don't press that 😭",
+"You're really trying huh?",
+"Okay that's cheating 😭"
 ]
 
-let apologyStep=0
+let step=0
 let yesSize=18
-let dodgeMode=false
 
 const message=document.getElementById("message")
 const gif=document.getElementById("gif")
@@ -192,18 +255,15 @@ const yesBtn=document.getElementById("yes")
 
 message.innerHTML=apologies[0].text
 
-/* safe dodge movement */
+/* move button */
 
 function moveButton(){
 
-const btnWidth=noBtn.offsetWidth
-const btnHeight=noBtn.offsetHeight
+const w=noBtn.offsetWidth
+const h=noBtn.offsetHeight
 
-const maxX=window.innerWidth-btnWidth-20
-const maxY=window.innerHeight-btnHeight-20
-
-const x=Math.random()*maxX
-const y=Math.random()*maxY
+const x=Math.random()*(window.innerWidth-w-20)
+const y=Math.random()*(window.innerHeight-h-20)
 
 noBtn.style.position="fixed"
 noBtn.style.left=x+"px"
@@ -217,49 +277,47 @@ noBtn.addEventListener("click",(e)=>{
 
 e.preventDefault()
 
-/* apology pages first */
+if(step < apologies.length-1){
 
-if(apologyStep < apologies.length-1){
-
-apologyStep++
-
-message.innerHTML=apologies[apologyStep].text
-gif.src=apologies[apologyStep].gif
+step++
+message.innerHTML=apologies[step].text
+gif.src=apologies[step].gif
 
 return
 
 }
-
-/* activate dodge mode */
-
-dodgeMode=true
 
 moveButton()
 
 yesSize+=8
 yesBtn.style.fontSize=yesSize+"px"
 
-const randomMsg=dodgeMessages[Math.floor(Math.random()*dodgeMessages.length)]
-message.innerHTML=randomMsg
+message.innerHTML=dodgeMessages[Math.floor(Math.random()*dodgeMessages.length)]
+
+const heart=document.createElement("div")
+heart.classList.add("orbit")
+heart.innerHTML="💖"
+yesBtn.appendChild(heart)
+
+setTimeout(()=>heart.remove(),3000)
 
 })
 
 /* confetti */
 
-function heartConfetti(){
+function confetti(){
 
-for(let i=0;i<50;i++){
+for(let i=0;i<70;i++){
 
-const confetti=document.createElement("div")
-confetti.classList.add("confetti")
-confetti.innerHTML="💖"
+const c=document.createElement("div")
+c.classList.add("confetti")
+c.innerHTML="💖"
 
-confetti.style.left=Math.random()*100+"vw"
-confetti.style.animationDuration=(2+Math.random()*2)+"s"
+c.style.left=Math.random()*100+"vw"
 
-document.body.appendChild(confetti)
+document.body.appendChild(c)
 
-setTimeout(()=>confetti.remove(),3000)
+setTimeout(()=>c.remove(),3000)
 
 }
 
@@ -269,34 +327,43 @@ setTimeout(()=>confetti.remove(),3000)
 
 yesBtn.addEventListener("click",()=>{
 
-heartConfetti()
+document.body.innerHTML=`
+
+<div class="loading">
+
+Loading forgiveness...
+
+<div class="pulse">🥺💖🥺</div>
+
+</div>
+
+`
 
 setTimeout(()=>{
 
+confetti()
+
 document.body.innerHTML=`
 
-<div class="final">
+<div class="ending">
 
-<h1>Thank you for giving me a chance ❤️🥰</h1>
+<h1>Thank you for giving me another chance ❤️🥰</h1>
 
 <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
 style="width:220px;border-radius:15px;margin:20px 0;">
 
 <p style="font-size:20px;max-width:420px;margin:auto;">
 I promise I'll do better and make things right.<br><br>
-You mean the world to me and I never want to hurt you again. 💖<br><br>
-Thank you for being patient with me. 🥺❤️
+You mean the world to me and I never want to hurt you again 💖
 </p>
 
-<p style="font-size:30px;margin-top:20px;">
-🥰💖💕✨
-</p>
+<p style="font-size:32px;margin-top:20px;">🥰💖💕✨</p>
 
 </div>
 
 `
 
-},1500)
+},2000)
 
 })
 
