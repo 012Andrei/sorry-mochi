@@ -356,7 +356,7 @@ function heartExplosion(){
 const centerX = window.innerWidth / 2
 const centerY = window.innerHeight / 2
 
-for(let i=0;i<90;i++){
+for(let i=0;i<140;i++){
 
 const heart = document.createElement("div")
 heart.innerHTML="💖"
@@ -414,6 +414,9 @@ Loading forgiveness...
 setTimeout(()=>{
 
 heartExplosion()
+  /* wait for explosion animation */
+
+setTimeout(()=>{
 
 /* achievement screen */
 
@@ -465,6 +468,8 @@ You mean the world to me and I never want to hurt you again 💖
 
 },1600)
 
+},1200)   // explosion duration
+
 },2000)
 
 })
@@ -473,6 +478,7 @@ You mean the world to me and I never want to hurt you again 💖
 
 </body>
 </html>
+
 
 
 
