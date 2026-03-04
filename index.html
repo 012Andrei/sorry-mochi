@@ -124,6 +124,7 @@ position:fixed;
 top:-20px;
 font-size:25px;
 animation:fall 3s linear forwards;
+z-index:9999;
 }
 
 @keyframes fall{
@@ -178,7 +179,7 @@ to{opacity:1;transform:scale(1);}
 
 <div class="card">
 
-<h1 id="title">I'm really sorry 🥺</h1>
+<h1>I'm really sorry 🥺</h1>
 
 <img id="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
@@ -220,6 +221,27 @@ setTimeout(()=>heart.remove(),6000)
 
 setInterval(createHeart,500)
 
+/* TYPEWRITER FUNCTION */
+
+function typeWriter(text){
+
+message.innerHTML=""
+let i=0
+
+function typing(){
+
+if(i < text.length){
+message.innerHTML += text.charAt(i)
+i++
+setTimeout(typing,30)
+}
+
+}
+
+typing()
+
+}
+
 /* apology steps */
 
 const apologies=[
@@ -253,7 +275,7 @@ const gif=document.getElementById("gif")
 const noBtn=document.getElementById("no")
 const yesBtn=document.getElementById("yes")
 
-message.innerHTML=apologies[0].text
+typeWriter(apologies[0].text)
 
 /* move button */
 
@@ -280,8 +302,8 @@ e.preventDefault()
 if(step < apologies.length-1){
 
 step++
-message.innerHTML=apologies[step].text
 gif.src=apologies[step].gif
+typeWriter(apologies[step].text)
 
 return
 
@@ -292,7 +314,7 @@ moveButton()
 yesSize+=8
 yesBtn.style.fontSize=yesSize+"px"
 
-message.innerHTML=dodgeMessages[Math.floor(Math.random()*dodgeMessages.length)]
+typeWriter(dodgeMessages[Math.floor(Math.random()*dodgeMessages.length)])
 
 const heart=document.createElement("div")
 heart.classList.add("orbit")
@@ -303,11 +325,11 @@ setTimeout(()=>heart.remove(),3000)
 
 })
 
-/* confetti */
+/* CONFETTI */
 
 function confetti(){
 
-for(let i=0;i<70;i++){
+for(let i=0;i<80;i++){
 
 const c=document.createElement("div")
 c.classList.add("confetti")
@@ -343,6 +365,8 @@ setTimeout(()=>{
 
 confetti()
 
+setTimeout(()=>{
+
 document.body.innerHTML=`
 
 <div class="ending">
@@ -362,6 +386,8 @@ You mean the world to me and I never want to hurt you again 💖
 </div>
 
 `
+
+},1000)
 
 },2000)
 
